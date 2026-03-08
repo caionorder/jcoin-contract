@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JOINADS COIN (JCOIN) — Utility Token for the Join Ads Network</title>
+  <meta name="description" content="JCOIN is the utility token of the Join Ads Network ecosystem on BNB Smart Chain, designed to reward publishers and partners in the programmatic advertising industry.">
+  <meta property="og:title" content="JOINADS COIN (JCOIN)">
+  <meta property="og:description" content="Utility token for the Join Ads Network ecosystem on BNB Smart Chain.">
+  <meta property="og:image" content="https://raw.githubusercontent.com/caionorder/jcoin-contract/main/assets/jcoin-logo.svg">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="https://raw.githubusercontent.com/caionorder/jcoin-contract/main/assets/jcoin-32.png" type="image/png">
+  <style>
+    :root {
+      --primary: #0d6efd;
+      --primary-dark: #0a58ca;
+      --accent: #00c9a7;
+      --accent-dark: #00a88a;
+      --bg: #f8fafc;
+      --bg-dark: #0f172a;
+      --bg-card: #ffffff;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --gradient-start: #0d6efd;
+      --gradient-end: #00c9a7;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ---- NAV ---- */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      z-index: 100;
+      transition: box-shadow 0.3s;
+    }
+    .navbar.scrolled { box-shadow: 0 2px 24px rgba(0,0,0,0.08); }
+    .nav-inner {
+      max-width: 1140px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 24px; height: 64px;
+    }
+    .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); font-weight: 700; font-size: 1.1rem; }
+    .nav-brand img { width: 32px; height: 32px; border-radius: 50%; }
+    .nav-links { display: flex; gap: 28px; list-style: none; }
+    .nav-links a { text-decoration: none; color: var(--text-muted); font-size: 0.9rem; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--primary); }
+    .nav-toggle { display: none; background: none; border: none; cursor: pointer; padding: 4px; }
+    .nav-toggle svg { width: 24px; height: 24px; stroke: var(--text); }
+
+    /* ---- HERO ---- */
+    .hero {
+      padding: 140px 24px 80px;
+      text-align: center;
+      background: linear-gradient(135deg, #eef2ff 0%, #ecfdf5 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+      background: radial-gradient(circle at 30% 40%, rgba(13,110,253,0.06) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 60%, rgba(0,201,167,0.06) 0%, transparent 50%);
+      animation: float 20s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(-2%, 2%); }
+    }
+    .hero-content { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; }
+    .hero-logo { width: 96px; height: 96px; border-radius: 50%; margin-bottom: 24px; box-shadow: 0 8px 32px rgba(13,110,253,0.15); }
+    .hero h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.5px; }
+    .hero h1 span { background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .hero .subtitle { font-size: 1.15rem; color: var(--text-muted); max-width: 560px; margin: 0 auto 32px; }
+    .hero-badges { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--bg-card); border: 1px solid var(--border);
+      padding: 8px 16px; border-radius: 100px; font-size: 0.85rem; font-weight: 500; color: var(--text-muted);
+    }
+    .badge svg { width: 16px; height: 16px; }
+
+    /* ---- SECTIONS ---- */
+    .section { padding: 80px 24px; }
+    .section-inner { max-width: 1040px; margin: 0 auto; }
+    .section-title { font-size: 1.75rem; font-weight: 700; margin-bottom: 12px; text-align: center; }
+    .section-subtitle { text-align: center; color: var(--text-muted); max-width: 600px; margin: 0 auto 48px; font-size: 1rem; }
+    .section-alt { background: #fff; }
+
+    /* ---- ABOUT ---- */
+    .about-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+    .about-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
+      padding: 32px; transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .about-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.06); }
+    .about-card .icon {
+      width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
+      margin-bottom: 16px; font-size: 1.5rem;
+    }
+    .about-card h3 { font-size: 1.1rem; margin-bottom: 8px; }
+    .about-card p { color: var(--text-muted); font-size: 0.95rem; }
+    .icon-blue { background: #eef2ff; }
+    .icon-green { background: #ecfdf5; }
+    .icon-purple { background: #f3e8ff; }
+
+    /* ---- TOKENOMICS ---- */
+    .tokenomics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; }
+    .token-stat {
+      text-align: center; background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 32px 24px;
+    }
+    .token-stat .value { font-size: 1.75rem; font-weight: 800; background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .token-stat .label { font-size: 0.9rem; color: var(--text-muted); margin-top: 8px; }
+
+    /* ---- TEAM ---- */
+    .team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
+    .team-card {
+      text-align: center; background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 40px 24px;
+    }
+    .team-avatar {
+      width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 16px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; font-weight: 700; color: #fff;
+    }
+    .team-card h3 { font-size: 1.05rem; margin-bottom: 4px; }
+    .team-card .role { color: var(--text-muted); font-size: 0.85rem; }
+    .team-card .company { color: var(--accent-dark); font-size: 0.8rem; font-weight: 500; margin-top: 4px; }
+
+    /* ---- CONTRACT ---- */
+    .contract-box {
+      background: var(--bg-dark); color: #e2e8f0; border-radius: 16px; padding: 40px;
+      text-align: center; max-width: 720px; margin: 0 auto;
+    }
+    .contract-box h3 { color: #fff; font-size: 1.2rem; margin-bottom: 8px; }
+    .contract-box .network { color: var(--accent); font-size: 0.9rem; margin-bottom: 20px; }
+    .contract-address {
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 12px; padding: 16px 20px; font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.85rem; word-break: break-all; margin-bottom: 20px; user-select: all;
+    }
+    .contract-links { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .contract-links a {
+      display: inline-flex; align-items: center; gap: 6px;
+      color: var(--accent); text-decoration: none; font-size: 0.9rem; font-weight: 500;
+      padding: 8px 16px; border: 1px solid rgba(0,201,167,0.3); border-radius: 8px;
+      transition: background 0.2s;
+    }
+    .contract-links a:hover { background: rgba(0,201,167,0.1); }
+
+    /* ---- ROADMAP ---- */
+    .roadmap { max-width: 640px; margin: 0 auto; }
+    .roadmap-item {
+      display: flex; gap: 20px; padding: 24px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .roadmap-item:last-child { border-bottom: none; }
+    .roadmap-marker {
+      flex-shrink: 0; width: 40px; height: 40px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+      margin-top: 2px;
+    }
+    .marker-done { background: #ecfdf5; }
+    .marker-progress { background: #eef2ff; }
+    .marker-planned { background: #f1f5f9; }
+    .roadmap-item h4 { font-size: 1rem; margin-bottom: 4px; }
+    .roadmap-item p { color: var(--text-muted); font-size: 0.9rem; }
+    .roadmap-status { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
+    .status-done { color: var(--accent-dark); }
+    .status-progress { color: var(--primary); }
+    .status-planned { color: var(--text-muted); }
+
+    /* ---- FOOTER ---- */
+    .footer {
+      background: var(--bg-dark); color: #94a3b8; padding: 48px 24px 32px;
+    }
+    .footer-inner {
+      max-width: 1040px; margin: 0 auto;
+      display: flex; flex-wrap: wrap; justify-content: space-between; gap: 32px;
+    }
+    .footer-brand { max-width: 320px; }
+    .footer-brand h4 { color: #fff; font-size: 1.1rem; margin-bottom: 8px; }
+    .footer-brand p { font-size: 0.85rem; line-height: 1.7; }
+    .footer-links h5 { color: #fff; font-size: 0.9rem; margin-bottom: 12px; }
+    .footer-links ul { list-style: none; }
+    .footer-links li { margin-bottom: 8px; }
+    .footer-links a { color: #94a3b8; text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--accent); }
+    .footer-bottom {
+      max-width: 1040px; margin: 32px auto 0;
+      padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.08);
+      font-size: 0.8rem; text-align: center;
+    }
+    .disclaimer {
+      max-width: 800px; margin: 16px auto 0;
+      font-size: 0.75rem; color: #64748b; line-height: 1.6;
+    }
+
+    /* ---- BUTTONS ---- */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 12px 24px; border-radius: 12px; font-weight: 600; font-size: 0.9rem;
+      text-decoration: none; transition: all 0.2s; border: none; cursor: pointer;
+    }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
+    .btn-outline { border: 1px solid var(--border); background: #fff; color: var(--text); }
+    .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+    .hero-actions { display: flex; gap: 12px; justify-content: center; margin-top: 24px; flex-wrap: wrap; }
+
+    /* ---- RESPONSIVE ---- */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .nav-links.open {
+        display: flex; flex-direction: column; position: absolute;
+        top: 64px; left: 0; right: 0; background: #fff; padding: 16px 24px;
+        border-bottom: 1px solid var(--border); gap: 16px;
+      }
+      .nav-toggle { display: block; }
+      .hero { padding: 120px 20px 60px; }
+      .hero h1 { font-size: 1.8rem; }
+      .hero .subtitle { font-size: 1rem; }
+      .section { padding: 60px 20px; }
+      .section-title { font-size: 1.4rem; }
+      .contract-box { padding: 28px 20px; }
+      .contract-address { font-size: 0.75rem; padding: 12px; }
+      .footer-inner { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="#" class="nav-brand">
+      <img src="https://raw.githubusercontent.com/caionorder/jcoin-contract/main/assets/jcoin-32.png" alt="JCOIN">
+      JCOIN
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#about">About</a></li>
+      <li><a href="#tokenomics">Tokenomics</a></li>
+      <li><a href="#team">Team</a></li>
+      <li><a href="#contract">Contract</a></li>
+      <li><a href="#roadmap">Roadmap</a></li>
+      <li><a href="whitepaper.html">Whitepaper</a></li>
+    </ul>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+      <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/>
+      </svg>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <img src="https://raw.githubusercontent.com/caionorder/jcoin-contract/main/assets/jcoin-logo.svg" alt="JCOIN Logo" class="hero-logo">
+    <h1>JOINADS <span>COIN</span></h1>
+    <p class="subtitle">Utility token of the Join Ads Network ecosystem on BNB Smart Chain, designed to reward publishers and partners in the programmatic advertising industry.</p>
+    <div class="hero-badges">
+      <span class="badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        BNB Smart Chain
+      </span>
+      <span class="badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg>
+        BEP-20 Standard
+      </span>
+      <span class="badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+        Verified Contract
+      </span>
+    </div>
+    <div class="hero-actions">
+      <a href="https://bscscan.com/token/0x6D48cfc545f9Cc97676ffA2728720B908B86Cc6A" target="_blank" rel="noopener" class="btn btn-primary">
+        View on BSCScan
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+      </a>
+      <a href="whitepaper.html" class="btn btn-outline">Read Whitepaper</a>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="section section-alt" id="about">
+  <div class="section-inner">
+    <h2 class="section-title">What is JCOIN?</h2>
+    <p class="section-subtitle">JCOIN is the utility token of the Join Ads Network, a programmatic advertising company founded in 2019 and operating across Latin America.</p>
+    <div class="about-grid">
+      <div class="about-card">
+        <div class="icon icon-blue">🎯</div>
+        <h3>Publisher Rewards</h3>
+        <p>JCOIN is used within the Join Ads Network to distribute rewards to publishers and content creators who participate in the advertising ecosystem.</p>
+      </div>
+      <div class="about-card">
+        <div class="icon icon-green">🤝</div>
+        <h3>Partner Incentives</h3>
+        <p>Partners and affiliates in the Join Ads Network can receive JCOIN as incentives for contributing to the growth and efficiency of the platform.</p>
+      </div>
+      <div class="about-card">
+        <div class="icon icon-purple">⚡</div>
+        <h3>Built on BNB Smart Chain</h3>
+        <p>Deployed on BNB Smart Chain (BSC) for low transaction fees and fast confirmation times, making it practical for frequent micro-transactions.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TOKENOMICS -->
+<section class="section" id="tokenomics">
+  <div class="section-inner">
+    <h2 class="section-title">Tokenomics</h2>
+    <p class="section-subtitle">JCOIN features controlled emission with a hard cap on total supply and monthly minting limits to ensure sustainable token distribution.</p>
+    <div class="tokenomics-grid">
+      <div class="token-stat">
+        <div class="value">100,000,000</div>
+        <div class="label">Maximum Supply (Hard Cap)</div>
+      </div>
+      <div class="token-stat">
+        <div class="value">500,000</div>
+        <div class="label">Monthly Emission Cap</div>
+      </div>
+      <div class="token-stat">
+        <div class="value">18</div>
+        <div class="label">Decimals</div>
+      </div>
+      <div class="token-stat">
+        <div class="value">BEP-20</div>
+        <div class="label">Token Standard</div>
+      </div>
+    </div>
+    <div style="max-width: 640px; margin: 40px auto 0; background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 28px 32px;">
+      <h3 style="font-size: 1.05rem; margin-bottom: 16px;">Emission Mechanism</h3>
+      <ul style="list-style: none; color: var(--text-muted); font-size: 0.9rem; line-height: 2;">
+        <li>✦ <strong>No pre-mine</strong> — Tokens are minted gradually as needed</li>
+        <li>✦ <strong>Monthly cap enforced on-chain</strong> — Maximum 500,000 JCOIN per calendar month</li>
+        <li>✦ <strong>Role-based minting</strong> — Only authorized addresses with MINTER_ROLE can mint</li>
+        <li>✦ <strong>Burnable</strong> — Token holders can permanently burn their tokens</li>
+        <li>✦ <strong>Pausable</strong> — Emergency pause mechanism for security incidents</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section class="section section-alt" id="team">
+  <div class="section-inner">
+    <h2 class="section-title">Team</h2>
+    <p class="section-subtitle">JCOIN is developed and managed by the founding team of Join Ads Network, a programmatic advertising company established in 2019.</p>
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="team-avatar" style="background: linear-gradient(135deg, #0d6efd, #6366f1);">DB</div>
+        <h3>Douglas Baccan</h3>
+        <div class="role">Chief Executive Officer</div>
+        <div class="company">Join Ads Network</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar" style="background: linear-gradient(135deg, #00c9a7, #0d6efd);">CN</div>
+        <h3>Caio Norder</h3>
+        <div class="role">Chief Technology Officer</div>
+        <div class="company">Join Ads Network</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar" style="background: linear-gradient(135deg, #8b5cf6, #ec4899);">DB</div>
+        <h3>Débora Baccan</h3>
+        <div class="role">Chief Financial Officer</div>
+        <div class="company">Join Ads Network</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTRACT -->
+<section class="section" id="contract">
+  <div class="section-inner">
+    <h2 class="section-title">Smart Contract</h2>
+    <p class="section-subtitle">JCOIN's smart contract is deployed and verified on BNB Smart Chain. The source code is open and available on GitHub.</p>
+    <div class="contract-box">
+      <h3>JOINADS COIN (JCOIN)</h3>
+      <div class="network">BNB Smart Chain (Mainnet) · Chain ID 56</div>
+      <div class="contract-address">0x6D48cfc545f9Cc97676ffA2728720B908B86Cc6A</div>
+      <div class="contract-links">
+        <a href="https://bscscan.com/token/0x6D48cfc545f9Cc97676ffA2728720B908B86Cc6A" target="_blank" rel="noopener">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+          BSCScan
+        </a>
+        <a href="https://github.com/caionorder/jcoin-contract" target="_blank" rel="noopener">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
+          Source Code
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ROADMAP -->
+<section class="section section-alt" id="roadmap">
+  <div class="section-inner">
+    <h2 class="section-title">Roadmap</h2>
+    <p class="section-subtitle">Key milestones in the development and deployment of JCOIN within the Join Ads Network ecosystem.</p>
+    <div class="roadmap">
+      <div class="roadmap-item">
+        <div class="roadmap-marker marker-done">✅</div>
+        <div>
+          <h4>Smart Contract Development</h4>
+          <p>BEP-20 token contract with role-based access control, monthly emission caps, and batch minting capabilities.</p>
+          <div class="roadmap-status status-done">Completed</div>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-marker marker-done">✅</div>
+        <div>
+          <h4>BSC Mainnet Deployment</h4>
+          <p>Contract deployed and verified on BNB Smart Chain mainnet with full source code verification on BSCScan.</p>
+          <div class="roadmap-status status-done">Completed</div>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-marker marker-progress">🔄</div>
+        <div>
+          <h4>BSCScan Token Update</h4>
+          <p>Official token information update on BSCScan including logo, description, social links, and project details.</p>
+          <div class="roadmap-status status-progress">In Progress</div>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-marker marker-planned">📋</div>
+        <div>
+          <h4>PancakeSwap Listing</h4>
+          <p>Establish a liquidity pool on PancakeSwap to enable decentralized trading of JCOIN.</p>
+          <div class="roadmap-status status-planned">Planned</div>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-marker marker-planned">📋</div>
+        <div>
+          <h4>Publisher Rewards Integration</h4>
+          <p>Integration of JCOIN distribution into the Join Ads Network platform for automated publisher reward payments.</p>
+          <div class="roadmap-status status-planned">Planned</div>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-marker marker-planned">📋</div>
+        <div>
+          <h4>Ecosystem Expansion</h4>
+          <p>Expand JCOIN utility across additional services within the Join Ads Network ecosystem.</p>
+          <div class="roadmap-status status-planned">Planned</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <h4>JOINADS COIN (JCOIN)</h4>
+      <p>A utility token of the Join Ads Network ecosystem, built on BNB Smart Chain to facilitate publisher rewards and partner incentives in the programmatic advertising industry.</p>
+    </div>
+    <div class="footer-links">
+      <h5>Resources</h5>
+      <ul>
+        <li><a href="whitepaper.html">Whitepaper</a></li>
+        <li><a href="https://bscscan.com/token/0x6D48cfc545f9Cc97676ffA2728720B908B86Cc6A" target="_blank" rel="noopener">BSCScan</a></li>
+        <li><a href="https://github.com/caionorder/jcoin-contract" target="_blank" rel="noopener">GitHub</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h5>Company</h5>
+      <ul>
+        <li><a href="https://joinads.me" target="_blank" rel="noopener">Join Ads Network</a></li>
+        <li><a href="mailto:contato@joinads.me">contato@joinads.me</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; 2025 Join Ads Network. All rights reserved.</p>
+    <p class="disclaimer">
+      <strong>Disclaimer:</strong> JCOIN is a utility token intended for use within the Join Ads Network ecosystem. It is not an investment product, security, or financial instrument. 
+      JCOIN does not represent any ownership stake, profit-sharing rights, or claim on assets. Nothing on this website constitutes financial advice or a solicitation to purchase tokens. 
+      Users should conduct their own research and consult with professional advisors before interacting with any digital assets. 
+      The information provided here is for informational purposes only and may be subject to change without notice.
+    </p>
+  </div>
+</footer>
+
+<script>
+  // Navbar scroll effect
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 10);
+  });
+
+  // Mobile menu toggle
+  const navToggle = document.getElementById('navToggle');
+  const navLinks = document.getElementById('navLinks');
+  navToggle.addEventListener('click', () => {
+    navLinks.classList.toggle('open');
+  });
+
+  // Close mobile menu on link click
+  navLinks.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      navLinks.classList.remove('open');
+    });
+  });
+
+  // Smooth reveal on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.about-card, .token-stat, .team-card, .roadmap-item').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    observer.observe(el);
+  });
+</script>
+
+</body>
+</html>

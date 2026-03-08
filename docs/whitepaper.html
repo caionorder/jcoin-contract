@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JCOIN Whitepaper — JOINADS COIN</title>
+  <meta name="description" content="Technical whitepaper for JOINADS COIN (JCOIN), the utility token of the Join Ads Network on BNB Smart Chain.">
+  <link rel="icon" href="https://raw.githubusercontent.com/caionorder/jcoin-contract/main/assets/jcoin-32.png" type="image/png">
+  <style>
+    :root {
+      --primary: #0d6efd;
+      --accent: #00c9a7;
+      --bg: #f8fafc;
+      --bg-card: #ffffff;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --bg-dark: #0f172a;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      color: var(--text); background: var(--bg); line-height: 1.8;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* NAV */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0;
+      background: rgba(255,255,255,0.92); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border); z-index: 100; height: 64px;
+    }
+    .nav-inner {
+      max-width: 860px; margin: 0 auto; display: flex; align-items: center;
+      justify-content: space-between; padding: 0 24px; height: 100%;
+    }
+    .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); font-weight: 700; font-size: 1.1rem; }
+    .nav-brand img { width: 32px; height: 32px; border-radius: 50%; }
+    .nav-back { color: var(--primary); text-decoration: none; font-size: 0.9rem; font-weight: 500; }
+    .nav-back:hover { text-decoration: underline; }
+
+    /* CONTENT */
+    .paper {
+      max-width: 860px; margin: 0 auto; padding: 100px 24px 60px;
+    }
+    .paper-header { text-align: center; margin-bottom: 48px; padding-bottom: 32px; border-bottom: 1px solid var(--border); }
+    .paper-header img { width: 64px; height: 64px; border-radius: 50%; margin-bottom: 16px; }
+    .paper-header h1 { font-size: 2rem; font-weight: 800; margin-bottom: 8px; }
+    .paper-header .version { color: var(--text-muted); font-size: 0.9rem; }
+
+    .toc { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 24px 32px; margin-bottom: 48px; }
+    .toc h3 { font-size: 1rem; margin-bottom: 12px; }
+    .toc ol { padding-left: 20px; }
+    .toc li { margin-bottom: 6px; }
+    .toc a { color: var(--primary); text-decoration: none; font-size: 0.9rem; }
+    .toc a:hover { text-decoration: underline; }
+
+    .section { margin-bottom: 48px; }
+    .section h2 { font-size: 1.4rem; font-weight: 700; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid var(--accent); display: inline-block; }
+    .section h3 { font-size: 1.1rem; font-weight: 600; margin: 24px 0 12px; }
+    .section p { margin-bottom: 16px; color: var(--text); font-size: 0.95rem; }
+    .section ul, .section ol { padding-left: 24px; margin-bottom: 16px; }
+    .section li { margin-bottom: 8px; font-size: 0.95rem; }
+
+    .info-table { width: 100%; border-collapse: collapse; margin: 16px 0 24px; font-size: 0.9rem; }
+    .info-table th, .info-table td { padding: 12px 16px; border: 1px solid var(--border); text-align: left; }
+    .info-table th { background: #f1f5f9; font-weight: 600; width: 35%; }
+    .info-table td { background: var(--bg-card); }
+
+    .code-block {
+      background: var(--bg-dark); color: #e2e8f0; border-radius: 12px; padding: 20px 24px;
+      font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.85rem;
+      overflow-x: auto; margin: 16px 0 24px; line-height: 1.7;
+    }
+    .code-block .keyword { color: #93c5fd; }
+    .code-block .type { color: #86efac; }
+    .code-block .comment { color: #64748b; }
+    .code-block .string { color: #fcd34d; }
+
+    .callout {
+      background: #eef2ff; border-left: 4px solid var(--primary); border-radius: 0 8px 8px 0;
+      padding: 16px 20px; margin: 16px 0 24px; font-size: 0.9rem;
+    }
+
+    .footer-wp {
+      text-align: center; padding: 32px 24px; border-top: 1px solid var(--border); margin-top: 48px;
+      color: var(--text-muted); font-size: 0.8rem;
+    }
+    .disclaimer {
+      max-width: 700px; margin: 16px auto 0;
+      font-size: 0.75rem; color: #94a3b8; line-height: 1.6;
+    }
+
+    @media (max-width: 768px) {
+      .paper { padding: 80px 16px 40px; }
+      .paper-header h1 { font-size: 1.5rem; }
+      .section h2 { font-size: 1.2rem; }
+      .info-table th { width: 40%; }
+      .info-table th, .info-table td { padding: 8px 12px; font-size: 0.85rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-brand">
+      <img src="https://raw.githubusercontent.com/caionorder/jcoin-contract/main/assets/jcoin-32.png" alt="JCOIN">
+      JCOIN
+    </a>
+    <a href="index.html" class="nav-back">← Back to Homepage</a>
+  </div>
+</nav>
+
+<main class="paper">
+
+  <div class="paper-header">
+    <img src="https://raw.githubusercontent.com/caionorder/jcoin-contract/main/assets/jcoin-logo.svg" alt="JCOIN">
+    <h1>JCOIN Whitepaper</h1>
+    <div class="version">JOINADS COIN — Version 1.0 · March 2025</div>
+  </div>
+
+  <!-- TABLE OF CONTENTS -->
+  <div class="toc">
+    <h3>Table of Contents</h3>
+    <ol>
+      <li><a href="#overview">Overview</a></li>
+      <li><a href="#joinads">Join Ads Network</a></li>
+      <li><a href="#utility">Token Utility</a></li>
+      <li><a href="#tokenomics">Tokenomics</a></li>
+      <li><a href="#smart-contract">Smart Contract</a></li>
+      <li><a href="#security">Security &amp; Access Control</a></li>
+      <li><a href="#team-section">Team</a></li>
+      <li><a href="#legal">Legal Disclaimer</a></li>
+    </ol>
+  </div>
+
+  <!-- 1. OVERVIEW -->
+  <div class="section" id="overview">
+    <h2>1. Overview</h2>
+    <p>
+      JOINADS COIN (JCOIN) is a BEP-20 utility token deployed on BNB Smart Chain (BSC). 
+      It is designed to serve as the reward and incentive mechanism within the Join Ads Network ecosystem, 
+      a programmatic advertising platform operating in Latin America.
+    </p>
+    <p>
+      JCOIN enables the Join Ads Network to distribute rewards to publishers and partners in a transparent, 
+      auditable, and programmable manner using blockchain technology. The token is not intended as a speculative 
+      asset or investment instrument.
+    </p>
+  </div>
+
+  <!-- 2. JOIN ADS NETWORK -->
+  <div class="section" id="joinads">
+    <h2>2. Join Ads Network</h2>
+    <p>
+      Join Ads Network is a programmatic advertising company founded in 2019. The company operates 
+      in the digital advertising space across Latin America, connecting advertisers with publishers through 
+      its programmatic platform.
+    </p>
+    <p>
+      The company's core services include programmatic media buying, publisher monetization, 
+      and advertising technology solutions. JCOIN was created to complement these services by introducing 
+      a token-based reward system for the network's participants.
+    </p>
+    <table class="info-table">
+      <tr><th>Company</th><td>Join Ads Network</td></tr>
+      <tr><th>Founded</th><td>2019</td></tr>
+      <tr><th>Sector</th><td>Programmatic Advertising / AdTech</td></tr>
+      <tr><th>Region</th><td>Latin America</td></tr>
+      <tr><th>Website</th><td><a href="https://joinads.me" target="_blank" rel="noopener">joinads.me</a></td></tr>
+      <tr><th>Contact</th><td><a href="mailto:contato@joinads.me">contato@joinads.me</a></td></tr>
+    </table>
+  </div>
+
+  <!-- 3. TOKEN UTILITY -->
+  <div class="section" id="utility">
+    <h2>3. Token Utility</h2>
+    <p>JCOIN is designed to serve specific functions within the Join Ads Network ecosystem:</p>
+    <h3>Publisher Rewards</h3>
+    <p>
+      Publishers who generate advertising revenue through the Join Ads Network can receive JCOIN as 
+      additional rewards. This mechanism aims to incentivize content creation and platform participation.
+    </p>
+    <h3>Partner Incentives</h3>
+    <p>
+      Partners and affiliates who contribute to the network's growth and operational efficiency 
+      can receive JCOIN as incentive payments.
+    </p>
+    <h3>Ecosystem Participation</h3>
+    <p>
+      As the Join Ads Network ecosystem evolves, JCOIN may be used for additional utility functions 
+      within the platform, such as accessing services or participating in governance decisions.
+    </p>
+    <div class="callout">
+      <strong>Note:</strong> JCOIN's utility is limited to the Join Ads Network ecosystem. 
+      It does not represent ownership, profit-sharing rights, or claims on company assets.
+    </div>
+  </div>
+
+  <!-- 4. TOKENOMICS -->
+  <div class="section" id="tokenomics">
+    <h2>4. Tokenomics</h2>
+    <table class="info-table">
+      <tr><th>Token Name</th><td>JOINADS COIN</td></tr>
+      <tr><th>Symbol</th><td>JCOIN</td></tr>
+      <tr><th>Standard</th><td>BEP-20 (ERC-20 compatible)</td></tr>
+      <tr><th>Network</th><td>BNB Smart Chain (Chain ID: 56)</td></tr>
+      <tr><th>Decimals</th><td>18</td></tr>
+      <tr><th>Maximum Supply</th><td>100,000,000 JCOIN (hard cap)</td></tr>
+      <tr><th>Monthly Emission Cap</th><td>500,000 JCOIN</td></tr>
+      <tr><th>Initial Supply</th><td>0 (no pre-mine)</td></tr>
+    </table>
+
+    <h3>Emission Model</h3>
+    <p>
+      JCOIN employs a controlled emission model with two key constraints enforced at the smart contract level:
+    </p>
+    <ul>
+      <li><strong>Hard Cap:</strong> The total supply can never exceed 100,000,000 JCOIN. This limit is immutable and enforced by the contract.</li>
+      <li><strong>Monthly Cap:</strong> A maximum of 500,000 JCOIN can be minted per calendar month. The cap resets automatically at the beginning of each month.</li>
+    </ul>
+    <p>
+      There was no pre-mine or initial token generation event. All tokens are minted gradually as needed 
+      for ecosystem operations, subject to the monthly and total supply caps.
+    </p>
+
+    <h3>Token Distribution</h3>
+    <p>
+      Tokens are distributed through the Join Ads Network platform based on publisher performance and 
+      partner contributions. Distribution is managed by authorized addresses holding the MINTER_ROLE.
+    </p>
+  </div>
+
+  <!-- 5. SMART CONTRACT -->
+  <div class="section" id="smart-contract">
+    <h2>5. Smart Contract</h2>
+    <table class="info-table">
+      <tr><th>Contract Address</th><td style="font-family: monospace; word-break: break-all;">0x6D48cfc545f9Cc97676ffA2728720B908B86Cc6A</td></tr>
+      <tr><th>Admin Address</th><td style="font-family: monospace; word-break: break-all;">0x79BCb6005c51161E955C4331e93a5732cc53AAA9</td></tr>
+      <tr><th>Compiler</th><td>Solidity (compatible with OpenZeppelin libraries)</td></tr>
+      <tr><th>Verified</th><td>Yes — <a href="https://bscscan.com/address/0x6D48cfc545f9Cc97676ffA2728720B908B86Cc6A#code" target="_blank" rel="noopener">View on BSCScan</a></td></tr>
+      <tr><th>Source Code</th><td><a href="https://github.com/caionorder/jcoin-contract" target="_blank" rel="noopener">github.com/caionorder/jcoin-contract</a></td></tr>
+    </table>
+
+    <h3>Key Functions</h3>
+
+    <h3>Minting</h3>
+    <div class="code-block">
+<span class="comment">// Mint to a single address</span>
+<span class="keyword">function</span> <span class="type">mint</span>(address to, uint256 amount) <span class="keyword">external</span> onlyRole(MINTER_ROLE)
+
+<span class="comment">// Batch mint with different amounts per recipient</span>
+<span class="keyword">function</span> <span class="type">batchMint</span>(address[] recipients, uint256[] amounts) <span class="keyword">external</span> onlyRole(MINTER_ROLE)
+
+<span class="comment">// Batch mint with equal amounts (gas-optimized)</span>
+<span class="keyword">function</span> <span class="type">batchMintEqual</span>(address[] recipients, uint256 amountEach) <span class="keyword">external</span> onlyRole(MINTER_ROLE)
+    </div>
+
+    <h3>Burning</h3>
+    <div class="code-block">
+<span class="comment">// Burn your own tokens</span>
+<span class="keyword">function</span> <span class="type">burn</span>(uint256 amount) <span class="keyword">external</span>
+
+<span class="comment">// Burn from another address (requires approval)</span>
+<span class="keyword">function</span> <span class="type">burnFrom</span>(address account, uint256 amount) <span class="keyword">external</span>
+    </div>
+
+    <h3>View Functions</h3>
+    <div class="code-block">
+<span class="comment">// Remaining mintable tokens this month</span>
+<span class="keyword">function</span> <span class="type">remainingMonthlyMint</span>() <span class="keyword">external view returns</span> (uint256)
+
+<span class="comment">// Remaining tokens until hard cap</span>
+<span class="keyword">function</span> <span class="type">remainingTotalMint</span>() <span class="keyword">external view returns</span> (uint256)
+
+<span class="comment">// Seconds until monthly cap resets</span>
+<span class="keyword">function</span> <span class="type">timeUntilMonthReset</span>() <span class="keyword">external view returns</span> (uint256)
+    </div>
+  </div>
+
+  <!-- 6. SECURITY -->
+  <div class="section" id="security">
+    <h2>6. Security &amp; Access Control</h2>
+    <p>
+      The JCOIN smart contract implements a role-based access control system using OpenZeppelin's 
+      AccessControl library. This ensures that sensitive operations can only be performed by authorized addresses.
+    </p>
+    <table class="info-table">
+      <tr><th>DEFAULT_ADMIN_ROLE</th><td>Can grant and revoke all other roles. Held by the contract deployer.</td></tr>
+      <tr><th>ADMIN_ROLE</th><td>Can pause/unpause token transfers and configure transfer restrictions.</td></tr>
+      <tr><th>MINTER_ROLE</th><td>Can mint new tokens, subject to monthly and total supply caps.</td></tr>
+    </table>
+
+    <h3>Safety Mechanisms</h3>
+    <ul>
+      <li><strong>Pausable:</strong> All token transfers can be paused in case of security incidents or emergencies.</li>
+      <li><strong>Transfer Restrictions:</strong> Optional mint/burn-only mode restricts transfers to minting and burning operations only.</li>
+      <li><strong>On-chain Caps:</strong> Both monthly emission and total supply caps are enforced at the contract level and cannot be bypassed.</li>
+      <li><strong>Open Source:</strong> The full contract source code is publicly available and verified on BSCScan.</li>
+    </ul>
+  </div>
+
+  <!-- 7. TEAM -->
+  <div class="section" id="team-section">
+    <h2>7. Team</h2>
+    <p>JCOIN is developed and managed by the founding team of Join Ads Network:</p>
+    <table class="info-table">
+      <tr><th>Douglas Baccan</th><td>Chief Executive Officer (CEO) — Co-founder of Join Ads Network</td></tr>
+      <tr><th>Caio Norder</th><td>Chief Technology Officer (CTO) — Responsible for technical architecture and smart contract development</td></tr>
+      <tr><th>Débora Baccan</th><td>Chief Financial Officer (CFO) — Oversees financial operations and compliance</td></tr>
+    </table>
+  </div>
+
+  <!-- 8. LEGAL -->
+  <div class="section" id="legal">
+    <h2>8. Legal Disclaimer</h2>
+    <p>
+      This document is provided for informational purposes only. It does not constitute an offer to sell, 
+      a solicitation of an offer to buy, or a recommendation for any digital asset, security, or financial instrument.
+    </p>
+    <p>
+      JCOIN is a utility token designed for use within the Join Ads Network ecosystem. It does not represent:
+    </p>
+    <ul>
+      <li>An investment contract or security</li>
+      <li>Ownership or equity in Join Ads Network or any related entity</li>
+      <li>A right to dividends, profit sharing, or any form of financial return</li>
+      <li>A claim on company assets</li>
+    </ul>
+    <p>
+      The information in this document may be updated, modified, or superseded at any time without notice. 
+      Users should conduct their own research and consult with qualified legal and financial advisors before 
+      interacting with any digital assets.
+    </p>
+    <p>
+      The JCOIN smart contract is provided "as is" without warranty of any kind. While reasonable efforts 
+      have been made to ensure the security and correctness of the contract, users interact with it at their own risk.
+    </p>
+  </div>
+
+</main>
+
+<div class="footer-wp">
+  <p>&copy; 2025 Join Ads Network. All rights reserved.</p>
+  <p class="disclaimer">
+    This whitepaper is for informational purposes only and does not constitute financial, legal, or investment advice. 
+    JCOIN is a utility token and not a security or investment product.
+  </p>
+</div>
+
+</body>
+</html>
